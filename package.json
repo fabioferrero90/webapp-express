@@ -1,0 +1,22 @@
+{
+  "name": "webapp-express",
+  "version": "1.0.0",
+  "description": "Exercise #47 - Boolean",
+  "repository": {
+    "type": "git",
+    "url": "webapp-express"
+  },
+  "license": "ISC",
+  "author": "Fabio Ferrero",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "node --watch server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mysql2": "^3.12.0"
+  }
+}
