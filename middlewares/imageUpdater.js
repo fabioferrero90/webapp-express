@@ -1,9 +1,7 @@
 const connection = require('../data/db')
 
 const imageUpdater = (movieName, id, res) => {
-  console.log(movieName)
   const imagename = movieName.toLowerCase().replace(/ /g, '_').replace(/:/g, '') + '.jpg';
-  console.log(imagename)
 
   const sql = `UPDATE movies SET image = '${imagename}' WHERE id = ${id}`;
 
