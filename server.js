@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const port = 3000;
+const imagePath = require('./middlewares/imagePath');
 
 const errorsHandler = require('./middlewares/errorsHandler')
 const notFound = require('./middlewares/notFound')
@@ -8,6 +9,8 @@ const notFound = require('./middlewares/notFound')
 const moviesRouter = require('./routers/movies');
 
 app.use(express.json())
+
+app.use(imagePath)
 
 app.get('/', (req, res) => {
   res.send('Server dei Film');

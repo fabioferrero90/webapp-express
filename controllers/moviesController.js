@@ -6,22 +6,24 @@ const imageUpdater = require('../middlewares/imageUpdater');
 const index = (req, res) => {
 
   const sql = 'SELECT * FROM movies';
-
-  // effettuo la query al db
+  // EFFETTUO LA QUERY AL DB
   connection.query(sql, (err, results) => {
-    if (err) {return res.status(500).json({ error: "Query al database fallita" });
-    }
+    if (err) {return res.status(500).json({ error: "Query al database fallita" });}
 
-    // CONTROLLO SE CI SONO LE FOTO NEL DB
+    // CONTROLLO SE CI SONO LE IMMAGINI NEL DB
     for(movie of results){
       if(!movie.image){
         movie.image = imageUpdater(movie.title, movie.id);
       }
+      //AGGIUNGO IL PERCORSO DELL'IMMAGINE
+      movie.image = `${req.imagePath}/${movie.image}`;
     }
 
+    // RESTITUISCO IL RISULTATO FINALE
     res.json(results);
   })
 }
+  
 
 const show = (req, res) => {
 
@@ -36,28 +38,13 @@ const show = (req, res) => {
     
     if (results.length === 0) {return res.status(404).json({ error: "Film non trovato" });};
     
-    const postObj = {
-      id: results[0].id,
-      title: results[0].title,
-      director: results[0].director,
-      genre: results[0].genre,
-      release_year: results[0].release_year,
-      abstract: results[0].abstract,
-      image: results[0].image,
-      created_at: results[0].created_at,
-      updated_at: results[0].updated_at,
-      avg_rating: results[0].avg_rating,
-      reviews: []
-    };
-    // console.log(results)
-    // results.forEach(review => {
-    //   postObj.reviews.push({
-    //     id: reviews.review_vote,
-    //     name: reviews.review_text
-    //   })
-    // });
+    movie = results[0];
+    //Aggiungo il percorso dell'immagine
+    if (movie.image) {
+      movie.image = `${req.imagePath}/${movie.image}`;
+    }
 
-    res.json(postObj);
+    res.json(movie);
   })
 }
 
