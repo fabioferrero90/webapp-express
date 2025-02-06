@@ -16,7 +16,7 @@ const index = (req, res) => {
         movie.image = imageUpdater(movie.title, movie.id);
       }
       //AGGIUNGO IL PERCORSO DELL'IMMAGINE
-      movie.image = `${req.imagePath}/${movie.image}`;
+      movie.image = `${req.imagepath}/${movie.image}`;
     }
 
     // RESTITUISCO IL RISULTATO FINALE
@@ -41,7 +41,7 @@ const show = (req, res) => {
     movie = results[0];
     //Aggiungo il percorso dell'immagine
     if (movie.image) {
-      movie.image = `${req.imagePath}/${movie.image}`;
+      movie.image = `${req.imagepath}/${movie.image}`;
     }
 
     res.json(movie);
