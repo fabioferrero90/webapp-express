@@ -5,7 +5,11 @@ const imageUpdater = require('../middlewares/imageUpdater');
 
 const index = (req, res) => {
 
-  const sql = 'SELECT * FROM movies';
+  const sql = `SELECT m.*, ROUND(AVG(r.vote), 1) AS avg_rating
+    FROM movies m
+    LEFT JOIN reviews r ON m.id = r.movie_id
+    GROUP BY m.id`;
+  
   // EFFETTUO LA QUERY AL DB
   connection.query(sql, (err, results) => {
     if (err) {return res.status(500).json({ error: "Query al database fallita" });}
@@ -28,24 +32,26 @@ const index = (req, res) => {
 const show = (req, res) => {
 
   const id = req.params.id;
-  const sql = `SELECT m.*, ROUND(AVG(r.vote), 1) AS avg_rating
-    FROM movies m
-    LEFT JOIN reviews r ON m.id = r.movie_id
-    WHERE m.id = ?;`;
-  
+  const sql = `SELECT * FROM movies WHERE id = ?`;
   connection.query(sql, [id], (err, results) => {
     if (err) {return res.status(500).json({ error: err.sqlMessage })};
     
     if (results.length === 0) {return res.status(404).json({ error: "Film non trovato" });};
     
-    movie = results[0];
+    let movie = results[0];
     //Aggiungo il percorso dell'immagine
     if (movie.image) {
       movie.image = `${req.imagepath}/${movie.image}`;
     }
 
-    res.json(movie);
-  })
+    const reviewsSql = `SELECT * FROM reviews WHERE movie_id = ?`;
+    connection.query(reviewsSql, [id], (err, reviews) => {
+      if (err) {return res.status(500).json({ error: err.sqlMessage })};
+
+      movie.reviews = reviews;
+      res.json(movie);
+    });
+  });
 }
 
 //store

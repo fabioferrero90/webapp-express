@@ -2,11 +2,16 @@ const express = require('express');
 const app = express();
 const port = 3000;
 const imagePath = require('./middlewares/imagePath');
+const cors = require('cors');
 
 const errorsHandler = require('./middlewares/errorsHandler')
 const notFound = require('./middlewares/notFound')
 
 const moviesRouter = require('./routers/movies');
+
+app.use(cors())
+
+app.use(express.static('public'))
 
 app.use(express.json())
 
