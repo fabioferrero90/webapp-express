@@ -54,6 +54,20 @@ const show = (req, res) => {
   });
 }
 
+//store della review
+const storeReview = (req, res) => {
+  const movie_id = req.params.id;
+  const { name, vote, text } = req.body;
+
+  const sql = 'INSERT INTO reviews SET movie_id = ?, name = ?, vote = ?, text = ?';
+  connection.query(sql, [movie_id, name, vote, text], (err, results) => {
+    if (err) {return res.status(500).json({ error: err.sqlMessage })};
+
+    res.json({ message: "Recensione inserita" });
+  });
+}
+
+
 //store
 const store = (req, res) => {
   res.send('Film inserito')
@@ -85,6 +99,7 @@ const destroy = (req, res) => {
 module.exports = {
   index,
   show,
+  storeReview,
   store,
   update,
   modify,

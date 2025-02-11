@@ -21,4 +21,7 @@ router.patch('/:id', moviesController.modify);
 // destroy
 router.delete('/:id', moviesController.destroy);
 
+// store review
+router.post('/:id/review', moviesController.storeReview);
+
 module.exports = router;
