@@ -70,8 +70,20 @@ const storeReview = (req, res) => {
 
 //store
 const store = (req, res) => {
-  res.send('Film inserito')
-}
+  const { title, director, genre, release_year, abstract } = req.body;
+  const imageName = req.file.filename;
+
+
+  const sql = 'INSERT INTO movies (title, director, genre, release_year, abstract, image) VALUES(?, ?, ?, ?, ?, ?)';
+  connection.query(sql, [title, director, genre, release_year, abstract, imageName], (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: err.sqlMessage });
+    }
+    
+    console.log("Inserito nuovo film:", title);
+    res.status(201).json({ message: "Film inserito" });
+  });
+};
 
 // update
 const update = (req, res) => {
