@@ -2,7 +2,8 @@
 // importo la connessione al db
 const connection = require('../data/db')
 const imageUpdater = require('../middlewares/imageUpdater');
-
+const path = require('path')
+const fs = require('fs')
 const index = (req, res) => {
 
   const sql = `SELECT m.*, ROUND(AVG(r.vote), 1) AS avg_rating
@@ -100,12 +101,25 @@ const modify = (req, res) => {
 //delete
 const destroy = (req, res) => {
   const id = req.params.id;
+  const sqlSelect = 'SELECT image FROM movies WHERE id = ?';
   
-  const sql = 'DELETE FROM movies WHERE id = ?';
-  connection.query(sql, [id], (err) => {
-    if (err) {res.status(500).json({ error: "Query al database fallita" })};
+  connection.query(sqlSelect, [id], (err, results) => {
+    if (err) {return res.status(500).json({ error: "Errore nella selezione dell'immagine" })};
+    const imageName = results[0].image;
+    const imagePath = path.join(__dirname, '..', 'public/movies_cover', imageName);
+    res.json({ message: imagePath });
+    
+    //Elimino l'immagine dal server
+    fs.unlink(imagePath, (err) => {
+      if (err) {return res.status(500).json({ error: "Errore nella cancellazione dell'immagine"})};
+    });
+  });
+  
+  const sqlDelete= 'DELETE FROM movies WHERE id = ?';
+  connection.query(sqlDelete, [id], (err) => {
+    if (err) {return res.status(500).json({ error: "Query al database fallita" })};
     res.json({ message: "Film eliminato" });
-  })
+  });
 }
 
 module.exports = {
